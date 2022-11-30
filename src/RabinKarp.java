@@ -1,7 +1,9 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class RabinKarp {
 
@@ -12,6 +14,9 @@ public class RabinKarp {
 
     static int ind1 = 0;
     static int ind2 = 0;
+    static int qwe = 0;
+
+    static int max = 0;
 
     public static String fileToString(String fileName) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(fileName));
@@ -28,7 +33,7 @@ public class RabinKarp {
 
         String content = stringBuilder.toString();
 
-        return content;
+        return content.toLowerCase();
     }
 
     /* pat -> pattern
@@ -38,7 +43,7 @@ public class RabinKarp {
     static void search(String pat, String txt, int q)
     {
 
-
+        qwe = 0;
         int M = pat.length();
         int N = txt.length();
         int i, j;
@@ -72,11 +77,13 @@ public class RabinKarp {
 
                 // if p == t and pat[0...M-1] = txt[i, i+1,
                 // ...i+M-1]
-                if (j == M){
-                    al1.add(ind1++, i);
-                    al2.add(ind2++, pat);
-                }
 
+                if (j == M){
+                    qwe = i;
+                    al1.add(ind1++, qwe);
+                    al2.add(ind2++, pat);
+                    break;
+                }
             }
 
             // Calculate hash value for next window of text:
@@ -94,43 +101,81 @@ public class RabinKarp {
         }
     }
 
+    public static String removeCommonWords(String s){
+
+        s = s.replaceAll("\"", "");
+
+        String[] commonWords = new String[]{"{","}"};
+
+
+        String words1[] = s.trim().split("\\s+");
+        String ans = "";
+        for(String str : words1){
+            if(!Arrays.stream(commonWords).anyMatch(str::equals)){
+                ans = ans + " ";
+                ans = ans + str;
+            }
+        }
+        return ans.toLowerCase();
+    }
+
     public static void main(String[] args) throws IOException {
 
         int q = 101;
 
-        String file1 = "C:\\Users\\gyash\\OneDrive\\Desktop\\COMP6651\\sample_data_and_submission\\data\\okay03\\1.txt";
-        String file2 = "C:\\Users\\gyash\\OneDrive\\Desktop\\COMP6651\\sample_data_and_submission\\data\\okay03\\2.txt";
+        String file1 = "C:\\Users\\gyash\\OneDrive\\Desktop\\COMP6651\\sample_data_and_submission\\data\\plagiarism09\\1.txt";
+        String file2 = "C:\\Users\\gyash\\OneDrive\\Desktop\\COMP6651\\sample_data_and_submission\\data\\plagiarism09\\2.txt";
 
-        search(file1, file2, q);
+        ArrayList<Integer> res = new ArrayList<Integer>();
 
         String s1 = fileToString(file1);
-        System.out.println("File-1 Length: "+s1.length());
+
         System.out.println();
 
         String s2 = fileToString(file2);
-        System.out.println("File-1 Length: "+s2.length());
-        System.out.print("Testing: "+s2.charAt(234)+s2.charAt(235)+s2.charAt(236));
 
-        String words1[] = s1.trim().split("\\s+");
+        String backup = removeCommonWords(s1);
+
+        String words1[] = removeCommonWords(s1).trim().split("\\s+");
+
+        String words2[] = removeCommonWords(s2).trim().split("\\s+");
+
+        String res2 = removeCommonWords(s2);
+
+        StringBuilder sb = new StringBuilder(res2);
 
         for(int i = 0 ; i < words1.length; i++){
-            search(words1[i].toLowerCase(), s2.toLowerCase(), q);
+            if(qwe != 0)
+                sb.setCharAt(qwe, ' ');
+            search(words1[i].toLowerCase(), sb.toString(), q);
         }
 
-        System.out.println();
 
-        for(int i : al1)
-            System.out.print(i+" ");
+//        for(int i = 0 ; i < al1.size(); i++)
+//            System.out.println(al1.get(i)+" : "+al2.get(i));
 
-        System.out.println();
+//        DecimalFormat df = new DecimalFormat("#.####");
 
-        for(String s : al2)
-            System.out.print(s+" ");
 
-        System.out.println();
+        int div = Math.min(words1.length, words2.length);
 
-        System.out.println("al1 size: "+al1.size());
-
-        System.out.println("al2 size: "+al2.size());
+        int commonality = 1;
+        String str = al2.get(0) + " ";
+        for(int i = 1 ; i < al1.size(); i++){
+            if(al1.get(i - 1) < al1.get(i)){
+                str = str + al2.get(i);
+                str = str + " ";
+                System.out.println(str);
+                if(backup.contains(str) && str.length() >= 4 ){
+                    commonality = commonality + 1;
+                } else {
+                    max += commonality;
+                    str = " ";
+                    commonality = 0;
+                }
+            }
+        }
+        System.out.println("Commonality: "+max);
+        System.out.println("Score: "+(double)max/(double) div);
     }
 }
