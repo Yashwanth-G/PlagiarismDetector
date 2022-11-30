@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -18,28 +19,37 @@ public class RabinKarp {
 
     static int max = 0;
 
-    public static String fileToString(String fileName) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(fileName));
-        StringBuilder stringBuilder = new StringBuilder();
-        String line = null;
-        String ls = System.getProperty("line.separator");
-        while ((line = reader.readLine()) != null) {
-            stringBuilder.append(line);
-            stringBuilder.append(ls);
+    public static String fileToString(String fileName) {
+        String content = "";
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(fileName));
+            StringBuilder stringBuilder = new StringBuilder();
+            String line = null;
+            String ls = System.getProperty("line.separator");
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line);
+                stringBuilder.append(ls);
+            }
+            // delete the last new line separator
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+            content = stringBuilder.toString();
+
+        } catch (FileNotFoundException fnfe) {
+            System.out.println(fnfe.getMessage());
+        } catch (IOException ioe) {
+            System.out.println(ioe.getMessage());
+        } finally {
+            try {
+                if (reader != null)
+                    reader.close();
+            } catch (IOException ioe) {
+                System.out.println(ioe.getMessage());
+            }
+            return content.toLowerCase();
         }
-        // delete the last new line separator
-        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-        reader.close();
-
-        String content = stringBuilder.toString();
-
-        return content.toLowerCase();
     }
 
-    /* pat -> pattern
-        txt -> text
-        q -> A prime number
-    */
     static void search(String pat, String txt, int q)
     {
 
@@ -47,36 +57,27 @@ public class RabinKarp {
         int M = pat.length();
         int N = txt.length();
         int i, j;
-        int p = 0; // hash value for pattern
-        int t = 0; // hash value for txt
+        int p = 0;
+        int t = 0;
         int h = 1;
 
-        // The value of h would be "pow(d, M-1)%q"
         for (i = 0; i < M - 1; i++)
             h = (h * d) % q;
 
-        // Calculate the hash value of pattern and first
-        // window of text
+
         for (i = 0; i < M; i++) {
             p = (d * p + pat.charAt(i)) % q;
             t = (d * t + txt.charAt(i)) % q;
         }
 
-        // Slide the pattern over text one by one
         for (i = 0; i <= N - M; i++) {
 
-            // Check the hash values of current window of
-            // text and pattern. If the hash values match
-            // then only check for characters one by one
             if (p == t) {
-                /* Check for characters one by one */
+
                 for (j = 0; j < M; j++) {
                     if (txt.charAt(i + j) != pat.charAt(j))
                         break;
                 }
-
-                // if p == t and pat[0...M-1] = txt[i, i+1,
-                // ...i+M-1]
 
                 if (j == M){
                     qwe = i;
@@ -86,15 +87,11 @@ public class RabinKarp {
                 }
             }
 
-            // Calculate hash value for next window of text:
-            // Remove leading digit, add trailing digit
             if (i < N - M) {
                 t = (d * (t - txt.charAt(i) * h)
                         + txt.charAt(i + M))
                         % q;
 
-                // We might get negative value of t,
-                // converting it to positive
                 if (t < 0)
                     t = (t + q);
             }
