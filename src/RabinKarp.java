@@ -36,10 +36,19 @@ public class RabinKarp {
                 //System.out.println("Before: "+line);
                 line = line.replaceAll("[(){}\\\\]","");
                 // removes 'a' 'an' in the sentences
-                line = line.replaceAll("\\ban?\\b","");
-                line = line.replaceAll("\\bthe?\\b","");
-                line = line.replaceAll("\\band?\\b","");
-                line = line.replaceAll("\\bor?\\b","");
+                line = line.replaceAll("\\b(?i)an?\\b","");
+                line = line.replaceAll("\\b(?i)the?\\b","");
+                line = line.replaceAll("\\b(?i)and?\\b","");
+                line = line.replaceAll("\\b(?i)or?\\b","");
+                line = line.replaceAll("\\b(?i)to?\\b","");
+                line = line.replaceAll("\\b(?i)or?\\b","");
+                line = line.replaceAll("\\b(?i)is?\\b","");
+                line = line.replaceAll("\\b(?i)are?\\b","");
+
+                line = line.replaceAll("\\b(?i)i?\\b","");
+                line = line.replaceAll("\\b(?i)this?\\b","");
+                line = line.replaceAll("\\b(?i)there?\\b","");
+
                 line = line.replaceAll(" +", " ");
                 //System.out.println("After: "+line);
                 stringBuilder.append(line);
@@ -160,17 +169,22 @@ public class RabinKarp {
 //        String res2 = removeCommonWords(s2);
 //        System.out.println("After: "+res2);
 //        System.out.println();
+
+
+
+
+
         long start1 = System.nanoTime();
         String s1 = fileToString(file1);
         long end1 = System.nanoTime();
-        long seconds1 = ((end1 - start1) / 1000) % 60;
-        System.out.println(seconds1);
+        double elapsedTimeInSecond1 = (double) (end1 - start1) / 1_000_000_000;
+        System.out.println(elapsedTimeInSecond1);
 
         long start2 = System.nanoTime();
-        String s2 = fileToString(file2);
+        String s2 = fileToString(file2).toLowerCase().trim();
         long end2 = System.nanoTime();
-        long seconds2 = ((end2 - start2) / 1000) % 60;
-        System.out.println(seconds2);
+        double elapsedTimeInSecond2 = (double) (end2 - start2) / 1_000_000_000;
+        System.out.println(elapsedTimeInSecond2);
 
         String backup = s1;
 
@@ -188,8 +202,8 @@ public class RabinKarp {
             remove = "";
         }
         long end3 = System.nanoTime();
-        long seconds = ((end3 - start3) / 1000) % 60;
-        System.out.println(seconds);
+        double elapsedTimeInSecond3 = (double) (end3 - start3) / 1_000_000_000;
+        System.out.println(elapsedTimeInSecond3);
         int div = Math.min(words1.length, words2.length);
         int max = 0;
         String str = al2.get(0) + " ";
