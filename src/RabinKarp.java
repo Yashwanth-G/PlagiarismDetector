@@ -19,7 +19,12 @@ public class RabinKarp {
 
     static int max = 0;
 
+    static String remove = "";
+
+    static int test = 10;
+
     public static String fileToString(String fileName) {
+        System.out.println("Inside File to String");
         String content = "";
         BufferedReader reader = null;
         try {
@@ -28,6 +33,15 @@ public class RabinKarp {
             String line = null;
             String ls = System.getProperty("line.separator");
             while ((line = reader.readLine()) != null) {
+                //System.out.println("Before: "+line);
+                line = line.replaceAll("[(){}\\\\]","");
+                // removes 'a' 'an' in the sentences
+                line = line.replaceAll("\\ban?\\b","");
+                line = line.replaceAll("\\bthe?\\b","");
+                line = line.replaceAll("\\band?\\b","");
+                line = line.replaceAll("\\bor?\\b","");
+                line = line.replaceAll(" +", " ");
+                //System.out.println("After: "+line);
                 stringBuilder.append(line);
                 stringBuilder.append(ls);
             }
@@ -52,7 +66,9 @@ public class RabinKarp {
 
     static void search(String pat, String txt, int q)
     {
-
+        if(test == 10)
+            System.out.println("Inside Rabin Karp method");
+        test = 2;
         qwe = 0;
         int M = pat.length();
         int N = txt.length();
@@ -83,6 +99,7 @@ public class RabinKarp {
                     qwe = i;
                     al1.add(ind1++, qwe);
                     al2.add(ind2++, pat);
+                    remove = pat;
                     break;
                 }
             }
@@ -98,81 +115,104 @@ public class RabinKarp {
         }
     }
 
-    public static String removeCommonWords(String s){
-
-        s = s.replaceAll("\"", "");
-
-        String[] commonWords = new String[]{"{","}"};
-
-
-        String words1[] = s.trim().split("\\s+");
-        String ans = "";
-        for(String str : words1){
-            if(!Arrays.stream(commonWords).anyMatch(str::equals)){
-                ans = ans + " ";
-                ans = ans + str;
-            }
-        }
-        return ans.toLowerCase();
-    }
+//    public static String removeCommonWords(String s){
+//
+//        s = s.replaceAll("\"", "");
+//
+//        String[] commonWords = new String[]{"{","}","is","a","an","the"};
+//
+//
+//        String words1[] = s.trim().split("\\s+");
+//        String ans = "";
+//        for(String str : words1){
+//            if(!Arrays.stream(commonWords).anyMatch(str::equals)){
+//                ans = ans + " ";
+//                ans = ans + str;
+//            }
+//        }
+//        return ans.toLowerCase();
+//    }
 
     public static void main(String[] args) throws IOException {
 
         int q = 101;
 
-        String file1 = "C:\\Users\\gyash\\OneDrive\\Desktop\\COMP6651\\sample_data_and_submission\\data\\plagiarism09\\1.txt";
-        String file2 = "C:\\Users\\gyash\\OneDrive\\Desktop\\COMP6651\\sample_data_and_submission\\data\\plagiarism09\\2.txt";
+//        String file1 = "C:\\Users\\gyash\\OneDrive\\Desktop\\COMP6651\\sample_data_and_submission\\data\\okay06\\1.txt";
+//        String file2 = "C:\\Users\\gyash\\OneDrive\\Desktop\\COMP6651\\sample_data_and_submission\\data\\okay06\\2.txt";
 
-        ArrayList<Integer> res = new ArrayList<Integer>();
+        String file1 = "C:\\Users\\gyash\\OneDrive\\Desktop\\COMP6651\\sample_data_and_submission\\data\\okay07\\1.txt";
+        String file2 = "C:\\Users\\gyash\\OneDrive\\Desktop\\COMP6651\\sample_data_and_submission\\data\\okay07\\2.txt";
 
+//        String s1 = "cat is an animal. Dog is also an animal.";
+//        String s2 = "animal is also a living being. Animals also eat food.";
+//
+//        ArrayList<Integer> res = new ArrayList<Integer>();
+//
+//        //String s1 = fileToString(file1);
+//
+//        System.out.println();
+//        System.out.println("Before: "+s1);
+//        String res1 = removeCommonWords(s1);
+//        System.out.println("After: "+res1);
+//        System.out.println();
+//
+//        System.out.println("Before: "+s2);
+//        String res2 = removeCommonWords(s2);
+//        System.out.println("After: "+res2);
+//        System.out.println();
+        long start1 = System.nanoTime();
         String s1 = fileToString(file1);
+        long end1 = System.nanoTime();
+        long seconds1 = ((end1 - start1) / 1000) % 60;
+        System.out.println(seconds1);
 
-        System.out.println();
-
+        long start2 = System.nanoTime();
         String s2 = fileToString(file2);
+        long end2 = System.nanoTime();
+        long seconds2 = ((end2 - start2) / 1000) % 60;
+        System.out.println(seconds2);
 
-        String backup = removeCommonWords(s1);
+        String backup = s1;
 
-        String words1[] = removeCommonWords(s1).trim().split("\\s+");
+        String words1[] = s1.trim().split("\\s+");
 
-        String words2[] = removeCommonWords(s2).trim().split("\\s+");
+        String words2[] = s2.trim().split("\\s+");
 
-        String res2 = removeCommonWords(s2);
+        StringBuilder sb = new StringBuilder(s2);
 
-        StringBuilder sb = new StringBuilder(res2);
-
+        long start3 = System.nanoTime();
         for(int i = 0 ; i < words1.length; i++){
-            if(qwe != 0)
-                sb.setCharAt(qwe, ' ');
+            if(remove.length()>0)
+                sb.delete(qwe, qwe + remove.length()-1);
             search(words1[i].toLowerCase(), sb.toString(), q);
+            remove = "";
         }
-
-
-//        for(int i = 0 ; i < al1.size(); i++)
-//            System.out.println(al1.get(i)+" : "+al2.get(i));
-
-//        DecimalFormat df = new DecimalFormat("#.####");
-
-
+        long end3 = System.nanoTime();
+        long seconds = ((end3 - start3) / 1000) % 60;
+        System.out.println(seconds);
         int div = Math.min(words1.length, words2.length);
-
-        int commonality = 1;
+        int max = 0;
         String str = al2.get(0) + " ";
         for(int i = 1 ; i < al1.size(); i++){
             if(al1.get(i - 1) < al1.get(i)){
                 str = str + al2.get(i);
                 str = str + " ";
-                System.out.println(str);
-                if(backup.contains(str) && str.length() >= 4 ){
-                    commonality = commonality + 1;
-                } else {
-                    max += commonality;
+                if(backup.contains(str.trim())){
+                    if(i == al1.size()-1 && !str.equals(" ")) {
+                        max += str.trim().split(" ").length;
+                    }
+                    continue;
+                } else if(str.trim().split(" ").length >= 2){
+                    max += str.trim().split(" ").length;
                     str = " ";
-                    commonality = 0;
                 }
             }
         }
-        System.out.println("Commonality: "+max);
-        System.out.println("Score: "+(double)max/(double) div);
+        DecimalFormat df = new DecimalFormat("#.##");
+
+        double score = Double.parseDouble(df.format(( 100 * (double)max/ (double) Math.sqrt(words1.length * words2.length))));
+
+        System.out.println("Similarity: "+score);
+
     }
 }
