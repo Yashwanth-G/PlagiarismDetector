@@ -175,11 +175,8 @@ public class PlagiarismDetector {
      */
     public static void main(String[] args) throws IOException, InterruptedException {
 
-//        String file1 = "C:\\Users\\gyash\\OneDrive\\Desktop\\COMP6651\\sample_data_and_submission\\data\\okay06\\1.txt";
-//        String file2 = "C:\\Users\\gyash\\OneDrive\\Desktop\\COMP6651\\sample_data_and_submission\\data\\okay06\\2.txt";
-
-        String file1 = "C:\\Users\\gyash\\OneDrive\\Desktop\\COMP6651\\sample_data_and_submission\\data\\plagiarism07\\1.txt";
-        String file2 = "C:\\Users\\gyash\\OneDrive\\Desktop\\COMP6651\\sample_data_and_submission\\data\\plagiarism07\\2.txt";
+        String file1 = "1.txt";
+        String file2 = "2.txt";
 
 //        String fileName1 = args[0];
 //
