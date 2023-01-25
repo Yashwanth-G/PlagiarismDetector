@@ -35,7 +35,7 @@ public class RemoveCommonWords {
         long endFile1 = System.nanoTime();
         System.out.println("Total file-1 proecessing time in seconds: "+ ((double)(endFile1-startFile1))/1_000_000_000);
 
-        File modifiedFile_1 = new File("C:\\Users\\gyash\\OneDrive\\Desktop\\COMP6651\\output1.txt");
+        File modifiedFile_1 = new File("output1.txt");
         FileWriter wr1 = new FileWriter(modifiedFile_1);
         wr1.write(modifiedFile1);
         wr1.flush();
@@ -51,7 +51,7 @@ public class RemoveCommonWords {
         long endFile2 = System.nanoTime();
         System.out.println("Total file-2 proecessing time in seconds: "+ ((double)(endFile2-startFile2))/1_000_000_000);
 
-        File modifiedFile_2 = new File("C:\\Users\\gyash\\OneDrive\\Desktop\\COMP6651\\output2.txt");
+        File modifiedFile_2 = new File("output2.txt");
         FileWriter wr2 = new FileWriter(modifiedFile_2);
         wr2.write(modifiedFile2);
         wr2.flush();
@@ -65,10 +65,10 @@ public class RemoveCommonWords {
     public static void main(String[] args) throws IOException {
 
         File givenFile1 = new
-                File("C:\\Users\\gyash\\OneDrive\\Desktop\\COMP6651\\sample_data_and_submission\\data\\plagiarism02\\1.txt");
+                File("1.txt");
 
         File givenFile2 = new
-                File("C:\\Users\\gyash\\OneDrive\\Desktop\\COMP6651\\sample_data_and_submission\\data\\plagiarism02\\2.txt");
+                File("2.txt");
 
         //System.out.println("File 1 length before deletion: "+givenFile1.length());
         //System.out.println("File 2 length before deletion: "+givenFile2.length());
